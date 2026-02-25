@@ -1,9 +1,7 @@
 {
   "expo": {
-    "name": "Computer Use Webapp",
-    "slug": "computer-use-mobile",
-    "version": "1.0.0",
-    "orientation": "portrait",
+    "name": "codex2-mobile",
+    "slug": "codex2-mobile",
     "platforms": ["ios", "android", "web"],
     "web": {
       "bundler": "metro"

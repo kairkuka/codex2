@@ -1,4 +1,18 @@
-mobile/node_modules
-mobile/.expo
-mobile/dist
+# Node
+node_modules/
+npm-debug.log*
+
+# Build output
+build/
+dist/
+
+# Expo / React Native
+.expo/
+.expo-shared/
+web-build/
+
+# TypeScript
+*.tsbuildinfo
+
+# macOS
 .DS_Store

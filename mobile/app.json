@@ -2,9 +2,6 @@
   "expo": {
     "name": "codex2-mobile",
     "slug": "codex2-mobile",
-    "platforms": ["ios", "android", "web"],
-    "web": {
-      "bundler": "metro"
-    }
+    "platforms": ["ios", "android", "web"]
   }
 }

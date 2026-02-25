@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "main": "expo/AppEntry",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "start": "expo start",
     "web": "expo start --web"
@@ -12,5 +15,8 @@
     "react": "18.3.1",
     "react-native": "0.76.6",
     "react-native-web": "~0.19.13"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2"
   }
 }

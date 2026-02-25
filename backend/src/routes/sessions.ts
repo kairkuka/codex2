@@ -1,5 +1,8 @@
 import { Router } from 'express';
 import { Server } from 'socket.io';
+import { emitDone, emitUpdate } from '../sessions/emitter.js';
+import { disposeRuntime, setRuntime } from '../sessions/runtime.js';
+import { createRuntime } from '../sessions/runtimeUtils.js';
 import {
   createSession,
   getSession,
@@ -7,13 +10,12 @@ import {
   setStatus,
   type SessionMode,
 } from '../sessions/store.js';
-import { emitDone, emitUpdate } from '../sessions/emitter.js';
 import type { SessionDonePayload, SessionUpdatePayload } from '../ws/types.js';
 
 export function createSessionsRouter(io: Server) {
   const sessionsRouter = Router();
 
-  sessionsRouter.post('/sessions', (req, res) => {
+  sessionsRouter.post('/sessions', async (req, res) => {
     const { startUrl, command, mode } = req.body as {
       startUrl?: string;
       command?: string;
@@ -25,6 +27,19 @@ export function createSessionsRouter(io: Server) {
     }
 
     const session = createSession({ startUrl, command, mode });
+
+    try {
+      const runtime = await createRuntime(startUrl);
+      setRuntime(session.id, runtime);
+    } catch {
+      setStatus(session.id, 'ERROR');
+      const donePayload: SessionDonePayload = {
+        summary: 'Runtime bootstrap failed',
+        finalStatus: 'ERROR',
+      };
+      emitDone(io, session.id, donePayload);
+      return res.status(500).json({ error: 'Runtime bootstrap failed' });
+    }
 
     const payload: SessionUpdatePayload = {
       stepIndex: 0,
@@ -46,7 +61,7 @@ export function createSessionsRouter(io: Server) {
     return res.json(session);
   });
 
-  sessionsRouter.post('/sessions/:id/stop', (req, res) => {
+  sessionsRouter.post('/sessions/:id/stop', async (req, res) => {
     const id = req.params.id;
     const stopRequested = requestStop(id);
     if (!stopRequested) {
@@ -64,6 +79,8 @@ export function createSessionsRouter(io: Server) {
       finalStatus: 'STOPPED',
     };
     emitDone(io, session.id, payload);
+
+    await disposeRuntime(id);
 
     return res.json({ ok: true });
   });

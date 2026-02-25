@@ -4,7 +4,7 @@ export type SessionMode = 'agent' | 'manual';
 
 const sessions = new Map<string, Session>();
 
-const terminalStatuses: SessionStatus[] = [
+export const terminalStatuses: SessionStatus[] = [
   'DONE',
   'STOPPED',
   'ERROR',
@@ -39,6 +39,14 @@ export function createSession(data: {
 
 export function getSession(id: string): Session | undefined {
   return sessions.get(id);
+}
+
+export function getSessions(): Session[] {
+  return Array.from(sessions.values());
+}
+
+export function removeSession(id: string): boolean {
+  return sessions.delete(id);
 }
 
 export function requestStop(id: string): boolean {

@@ -2,6 +2,7 @@ import cors from 'cors';
 import express from 'express';
 import http from 'node:http';
 import { createSessionsRouter } from './routes/sessions.js';
+import { startCleanupScheduler } from './sessions/cleanupScheduler.js';
 import { initSocket } from './ws/socket.js';
 
 const app = express();
@@ -17,6 +18,7 @@ const server = http.createServer(app);
 const { io } = initSocket(server);
 
 app.use(createSessionsRouter(io));
+startCleanupScheduler();
 
 const port = Number(process.env.PORT ?? 3001);
 server.listen(port, () => {

@@ -3,6 +3,7 @@ import { Server } from 'socket.io';
 import { emitDone, emitUpdate } from '../sessions/emitter.js';
 import { disposeRuntime, setRuntime } from '../sessions/runtime.js';
 import { createRuntime } from '../sessions/runtimeUtils.js';
+import { saveScreenshot } from '../sessions/screenshot.js';
 import {
   createSession,
   getSession,
@@ -31,6 +32,7 @@ export function createSessionsRouter(io: Server) {
     try {
       const runtime = await createRuntime(startUrl);
       setRuntime(session.id, runtime);
+      await saveScreenshot(session.id, runtime.page, 0);
     } catch {
       setStatus(session.id, 'ERROR');
       const donePayload: SessionDonePayload = {

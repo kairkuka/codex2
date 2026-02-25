@@ -1,10 +1,11 @@
 import path from 'node:path';
 import { promises as fs } from 'node:fs';
 import { getSessions, removeSession, terminalStatuses } from './store.js';
+import { sessionsTmpDir } from './paths.js';
 
 const CLEANUP_INTERVAL_MS = 60_000;
 const TTL_MS = 30 * 60 * 1000;
-const sessionsTmpBase = path.resolve(process.cwd(), 'backend', 'tmp', 'sessions');
+const sessionsTmpBase = sessionsTmpDir();
 let started = false;
 
 function isSafeSessionPath(baseDir: string, targetDir: string): boolean {
